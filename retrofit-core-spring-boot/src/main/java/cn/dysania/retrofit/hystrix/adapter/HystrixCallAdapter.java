@@ -62,6 +62,11 @@ public class HystrixCallAdapter<R> implements CallAdapter<R, Object> {
                 }
                 return response;
             }
+
+            @Override
+            protected Object getFallback() {
+                return super.getFallback();
+            }
         };
 
         if (isHystrixCommand) {
