@@ -31,6 +31,7 @@
 
         <retrofit.version>2.3.0</retrofit.version>
         <lombok.version>1.16.18</lombok.version>
+        <hystrix.version>1.5.12</hystrix.version>
     </properties>
 
     <dependencyManagement>
@@ -65,13 +66,17 @@
                 <version>${project.version}</version>
             </dependency>
 
-            <!-- https://mvnrepository.com/artifact/org.projectlombok/lombok -->
             <dependency>
                 <groupId>org.projectlombok</groupId>
                 <artifactId>lombok</artifactId>
                 <version>${lombok.version}</version>
             </dependency>
 
+            <dependency>
+                <groupId>com.netflix.hystrix</groupId>
+                <artifactId>hystrix-core</artifactId>
+                <version>${hystrix.version}</version>
+            </dependency>
         </dependencies>
     </dependencyManagement>
 
