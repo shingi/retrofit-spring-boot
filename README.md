@@ -55,7 +55,7 @@ public class SampleTest {
 
 ## How to use
 
-### 覆盖默认配置
+### configuration
 
 使用 @RetrofitClient 的 configuration 属性指定配置类， 目前支持的bean如下
 
@@ -65,4 +65,21 @@ public class SampleTest {
 - OkHttpClient.Builder
 
 [e.g.](http://git.caimi-inc.com/baitouweng/retrofit-spring-boot/blob/master/retrofit-spring-boot-samples/src/main/java/com/wacai/retrofit/sample/client/Github.java)
+
+### retrofit with hystrix
+
+#### add hystrixCallAdapter
+
+```java
+Retrofit.Builder builder = new Retrofit.Builder()
+    .addCallAdapterFactory(new HysyrixCallAdapterFactory());
+```
+#### retrofit interface
+
+```java
+    @GET("users/{user}/repos")
+    HystrixCommand<List<Repo>> returnHystrixCommandBody(@Path("user") String user);
+```
+there can return HystrixCommand Observable Single Completable Response and ResponseBody
+
 
