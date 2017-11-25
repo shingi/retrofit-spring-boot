@@ -7,6 +7,7 @@ import com.netflix.hystrix.HystrixCommand;
 import lombok.Data;
 import retrofit2.http.GET;
 import retrofit2.http.Path;
+import rx.Observable;
 
 /**
  * TODO 类描述
@@ -17,6 +18,9 @@ public interface Github {
 
     @GET("users/{user}/repos")
     HystrixCommand<List<Repo>> returnHystrixCommandBody(@Path("user") String user);
+
+    @GET("users/{user}/repos")
+    Observable<List<Repo>> returnObservable(@Path("user") String user);
 
     @Data
     class Repo {

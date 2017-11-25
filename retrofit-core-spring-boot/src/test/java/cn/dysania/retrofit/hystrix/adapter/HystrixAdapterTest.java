@@ -14,6 +14,7 @@ import cn.dysania.retrofit.Github;
 import okhttp3.OkHttpClient;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
+import rx.Observable;
 
 /**
  * TODO 类描述
@@ -43,6 +44,16 @@ public class HystrixAdapterTest {
                 "liangGTY");
         assertNotNull(hystrixCommand);
         List<Github.Repo> repos = hystrixCommand.execute();
+        assertFalse(repos.isEmpty());
+        repos.forEach(System.out::println);
+    }
+
+    @Test
+    public void testReturnObservableBody() {
+        Observable<List<Github.Repo>> observable = github.returnObservable(
+                "liangGTY");
+        assertNotNull(observable);
+        List<Github.Repo> repos = observable.toBlocking().first();
         assertFalse(repos.isEmpty());
         repos.forEach(System.out::println);
     }
