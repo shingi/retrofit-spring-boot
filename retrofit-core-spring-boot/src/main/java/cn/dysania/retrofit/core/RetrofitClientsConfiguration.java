@@ -2,10 +2,14 @@ package cn.dysania.retrofit.core;
 
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Scope;
 
+import com.netflix.hystrix.HystrixCommand;
+
+import cn.dysania.retrofit.hystrix.adapter.HysyrixCallAdapterFactory;
 import okhttp3.OkHttpClient;
 import retrofit2.Converter;
 import retrofit2.Retrofit;
@@ -21,16 +25,29 @@ import retrofit2.converter.gson.GsonConverterFactory;
 public class RetrofitClientsConfiguration {
 
     @Bean
+    @ConditionalOnMissingBean
+    public OkHttpClient.Builder okHttpClient() {
+        return new OkHttpClient.Builder();
+    }
+
+    @Configuration
+    @ConditionalOnClass({ HystrixCommand.class })
+    protected static class HystrixFeignConfiguration {
+
+        @Bean
+        @Scope("prototype")
+        @ConditionalOnMissingBean
+        @ConditionalOnProperty(name = "retrofit.hystrix.enabled", havingValue = "true",matchIfMissing = false)
+        public Retrofit.Builder feignHystrixBuilder() {
+            return new Retrofit.Builder().addCallAdapterFactory(new HysyrixCallAdapterFactory());
+        }
+    }
+
+    @Bean
     @Scope("prototype")
     @ConditionalOnMissingBean
     public Retrofit.Builder retrofitBuilder() {
         return new Retrofit.Builder();
-    }
-
-    @Bean
-    @ConditionalOnMissingBean
-    public OkHttpClient.Builder okHttpClient(){
-        return new OkHttpClient.Builder();
     }
 
     @Configuration
