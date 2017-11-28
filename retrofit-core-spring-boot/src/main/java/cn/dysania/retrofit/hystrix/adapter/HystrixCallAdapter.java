@@ -1,11 +1,17 @@
 package cn.dysania.retrofit.hystrix.adapter;
 
+import java.lang.reflect.Field;
 import java.lang.reflect.Type;
+
+import org.springframework.util.ReflectionUtils;
 
 import com.netflix.hystrix.HystrixCommand;
 import com.netflix.hystrix.HystrixCommandGroupKey;
+import com.netflix.hystrix.HystrixCommandKey;
 import com.netflix.hystrix.HystrixCommandProperties;
+import com.netflix.hystrix.exception.HystrixBadRequestException;
 
+import okhttp3.Request;
 import retrofit2.Call;
 import retrofit2.CallAdapter;
 import retrofit2.Response;
@@ -51,20 +57,30 @@ public class HystrixCallAdapter<R> implements CallAdapter<R, Object> {
     @Override
     public Object adapt(Call<R> call) {
         // TODO Setter
+        Request request = call.request();
         HystrixCommand hystrixCommand = new HystrixCommand(HystrixCommand.Setter.withGroupKey(
-                HystrixCommandGroupKey.Factory.asKey("ExampleGroup")).andCommandPropertiesDefaults(
-                HystrixCommandProperties.Setter().withExecutionTimeoutEnabled(false))) {
+                HystrixCommandGroupKey.Factory.asKey("ExampleGroup")).andCommandKey(
+                HystrixCommandKey.Factory.asKey("Github.fetchRepo")).andCommandPropertiesDefaults(
+                HystrixCommandProperties.Setter().withExecutionTimeoutInMilliseconds(200000))) {
             @Override
             protected Object run() throws Exception {
-                Response<R> response = call.execute();
-                if (HystrixCallAdapter.this.isBody) {
-                    return response.body();
+                try {
+                    Response<R> response = call.execute();
+                    if (HystrixCallAdapter.this.isBody) {
+                        return response.body();
+                    }
+                    return response;
+                } catch (Exception e) {
+                    // TODO 包装一个业务异常 不触发服务降级处理逻辑
+                    throw new HystrixBadRequestException("bad request", e);
                 }
-                return response;
             }
 
             @Override
             protected Object getFallback() {
+                if (circuitBreaker.isOpen()){
+                    // TODO 报警逻辑，抽象报警器 报警速率控制
+                }
                 return super.getFallback();
             }
         };

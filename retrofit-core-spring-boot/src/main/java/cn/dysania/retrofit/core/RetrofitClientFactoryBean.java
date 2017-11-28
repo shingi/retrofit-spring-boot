@@ -7,6 +7,7 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
 import org.springframework.util.Assert;
 
+import lombok.Setter;
 import okhttp3.Call;
 import okhttp3.OkHttpClient;
 import retrofit2.CallAdapter;
@@ -18,6 +19,7 @@ import retrofit2.Retrofit;
  *
  * @author baitouweng
  */
+@Setter
 public class RetrofitClientFactoryBean implements FactoryBean<Object>, InitializingBean,
         ApplicationContextAware {
 
@@ -98,17 +100,5 @@ public class RetrofitClientFactoryBean implements FactoryBean<Object>, Initializ
     @Override
     public boolean isSingleton() {
         return true;
-    }
-
-    public void setType(Class<?> type) {
-        this.type = type;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public void setUrl(String url) {
-        this.url = url;
     }
 }

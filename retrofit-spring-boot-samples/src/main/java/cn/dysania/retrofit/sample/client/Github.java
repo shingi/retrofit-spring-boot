@@ -5,6 +5,8 @@ import java.util.List;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
+import com.netflix.hystrix.HystrixCommand;
+
 import cn.dysania.retrofit.core.RetrofitClient;
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
@@ -13,6 +15,7 @@ import retrofit2.Converter;
 import retrofit2.converter.gson.GsonConverterFactory;
 import retrofit2.http.GET;
 import retrofit2.http.Path;
+import rx.Observable;
 
 /**
  * TODO 类描述
@@ -24,6 +27,12 @@ public interface Github {
 
     @GET("users/{user}/repos")
     Call<List<Repo>> listRepos(@Path("user") String user);
+
+    @GET("users/{user}/repos")
+    HystrixCommand<List<Repo>> returnHystrixCommandBody(@Path("user") String user);
+
+    @GET("users/{user}/repos")
+    Observable<List<Repo>> returnObservable(@Path("user") String user);
 
     @Data
     class Repo {

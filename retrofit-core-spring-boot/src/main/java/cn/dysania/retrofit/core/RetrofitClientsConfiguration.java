@@ -11,6 +11,7 @@ import com.netflix.hystrix.HystrixCommand;
 
 import cn.dysania.retrofit.hystrix.adapter.HysyrixCallAdapterFactory;
 import okhttp3.OkHttpClient;
+import retrofit2.CallAdapter;
 import retrofit2.Converter;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
@@ -30,6 +31,13 @@ public class RetrofitClientsConfiguration {
         return new OkHttpClient.Builder();
     }
 
+    @Bean
+    @Scope("prototype")
+    @ConditionalOnMissingBean
+    public Retrofit.Builder retrofitBuilder() {
+        return new Retrofit.Builder();
+    }
+
     @Configuration
     @ConditionalOnClass({ HystrixCommand.class })
     protected static class HystrixFeignConfiguration {
@@ -38,16 +46,9 @@ public class RetrofitClientsConfiguration {
         @Scope("prototype")
         @ConditionalOnMissingBean
         @ConditionalOnProperty(name = "retrofit.hystrix.enabled", havingValue = "true",matchIfMissing = false)
-        public Retrofit.Builder feignHystrixBuilder() {
-            return new Retrofit.Builder().addCallAdapterFactory(new HysyrixCallAdapterFactory());
+        public CallAdapter.Factory feignHystrixBuilder() {
+            return new HysyrixCallAdapterFactory();
         }
-    }
-
-    @Bean
-    @Scope("prototype")
-    @ConditionalOnMissingBean
-    public Retrofit.Builder retrofitBuilder() {
-        return new Retrofit.Builder();
     }
 
     @Configuration
