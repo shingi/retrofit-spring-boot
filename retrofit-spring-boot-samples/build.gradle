@@ -1,0 +1,10 @@
+dependencies {
+  compile project(':retrofit-spring-boot-starter')
+  compile 'com.squareup.retrofit2:converter-jackson'
+  compile 'com.squareup.retrofit2:converter-gson'
+  compile 'com.netflix.hystrix:hystrix-metrics-event-stream:1.5.12'
+  compile 'com.netflix.hystrix:hystrix-core'
+  compile 'org.springframework.boot:spring-boot-starter-web'
+  testCompile 'org.springframework.boot:spring-boot-starter-test'
+  compileOnly 'org.projectlombok:lombok'
+}

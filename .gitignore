@@ -23,6 +23,9 @@ target/
 # Build output directies
 target/
 build/
+.gradle
+!gradle/wrapper/gradle-wrapper.jar
+
 
 ### NetBeans ###
 nbproject/private/

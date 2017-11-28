@@ -1,0 +1,53 @@
+buildscript {
+  ext {
+    springBootVersion = '1.5.8.RELEASE'
+  }
+  repositories {
+    mavenCentral()
+  }
+  dependencies {
+    classpath 'com.netflix.nebula:gradle-extra-configurations-plugin:3.0.3'
+    classpath "org.springframework.boot:spring-boot-gradle-plugin:${springBootVersion}"
+  }
+}
+
+plugins {
+  id "io.spring.dependency-management" version "1.0.3.RELEASE"
+}
+
+allprojects {
+  group = 'cn.dysania'
+  version = '0.0.1-SNAPSHOT'
+
+  ext.lombokVersion = "1.16.10"
+  ext.groovyVersion = "2.3.11"
+  ext.retrofitVersion = "2.3.0"
+  ext.hystrixVersion = "1.5.12"
+}
+
+subprojects {
+  apply plugin: 'java'
+  apply plugin: "spring-boot"
+
+  sourceCompatibility = 1.8
+  targetCompatibility = 1.8
+  tasks.withType(JavaCompile) {
+    options.encoding = 'UTF-8'
+  }
+
+  repositories {
+    jcenter()
+    maven { url "http://maven.aliyun.com/nexus/content/groups/public/" }
+  }
+
+  dependencyManagement {
+    dependencies {
+      dependency "com.squareup.retrofit2:converter-gson:${retrofitVersion}"
+      dependency "com.squareup.retrofit2:converter-jackson:${retrofitVersion}"
+      dependency "com.squareup.retrofit2:retrofit:${retrofitVersion}"
+      dependency "com.netflix.hystrix:hystrix-core:${hystrixVersion}"
+      dependency "org.projectlombok:lombok:${lombokVersion}"
+
+    }
+  }
+}

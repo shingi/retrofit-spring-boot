@@ -1,0 +1,5 @@
+
+description = 'retrofit-spring-boot-starter'
+dependencies {
+  compile project(':retrofit-core-spring-boot')
+}

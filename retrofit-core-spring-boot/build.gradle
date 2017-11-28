@@ -1,0 +1,13 @@
+dependencies {
+  compile 'com.squareup.retrofit2:converter-gson'
+  compile 'com.squareup.retrofit2:converter-jackson'
+  compile 'com.squareup.retrofit2:retrofit'
+  compile 'org.springframework.boot:spring-boot-autoconfigure'
+  compile 'org.springframework.boot:spring-boot-starter'
+  compile 'org.springframework.boot:spring-boot-configuration-processor'
+
+  compileOnly 'com.netflix.hystrix:hystrix-core'
+  compileOnly 'org.projectlombok:lombok'
+
+  testCompile 'org.springframework.boot:spring-boot-starter-test'
+}

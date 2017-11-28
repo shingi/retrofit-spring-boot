@@ -1,0 +1,8 @@
+rootProject.name = 'retrofit-spring-boot'
+include ':retrofit-spring-boot-starter'
+include ':retrofit-core-spring-boot'
+include ':retrofit-spring-boot-samples'
+
+project(':retrofit-spring-boot-starter').projectDir = "$rootDir/retrofit-spring-boot-starter" as File
+project(':retrofit-core-spring-boot').projectDir = "$rootDir/retrofit-core-spring-boot" as File
+project(':retrofit-spring-boot-samples').projectDir = "$rootDir/retrofit-spring-boot-samples" as File
