@@ -1,18 +1,15 @@
 buildscript {
-  ext {
-    springBootVersion = '1.5.8.RELEASE'
-  }
   repositories {
     mavenCentral()
   }
   dependencies {
     classpath 'com.netflix.nebula:gradle-extra-configurations-plugin:3.0.3'
-    classpath "org.springframework.boot:spring-boot-gradle-plugin:${springBootVersion}"
   }
 }
 
 plugins {
   id "io.spring.dependency-management" version "1.0.3.RELEASE"
+  id "org.springframework.boot" version "1.5.8.RELEASE"
 }
 
 allprojects {
@@ -47,7 +44,6 @@ subprojects {
       dependency "com.squareup.retrofit2:retrofit:${retrofitVersion}"
       dependency "com.netflix.hystrix:hystrix-core:${hystrixVersion}"
       dependency "org.projectlombok:lombok:${lombokVersion}"
-
     }
   }
 }
