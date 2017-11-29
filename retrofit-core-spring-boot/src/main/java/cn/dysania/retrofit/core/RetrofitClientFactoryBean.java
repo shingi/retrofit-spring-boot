@@ -1,5 +1,7 @@
 package cn.dysania.retrofit.core;
 
+import java.util.Map;
+
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.FactoryBean;
 import org.springframework.beans.factory.InitializingBean;
@@ -76,9 +78,10 @@ public class RetrofitClientFactoryBean implements FactoryBean<Object>, Initializ
             builder.addConverterFactory(converterFactory);
         }
 
-        CallAdapter.Factory callAdapterFactory = getOptional(context, CallAdapter.Factory.class);
-        if (callAdapterFactory != null) {
-            builder.addCallAdapterFactory(callAdapterFactory);
+        Map<String, CallAdapter.Factory> callAdapterFactorys = context.getInstances(this.name,
+                CallAdapter.Factory.class);
+        if (callAdapterFactorys != null) {
+            callAdapterFactorys.values().forEach(builder::addCallAdapterFactory);
         }
 
         Call.Factory callFactory = getOptional(context, Call.Factory.class);

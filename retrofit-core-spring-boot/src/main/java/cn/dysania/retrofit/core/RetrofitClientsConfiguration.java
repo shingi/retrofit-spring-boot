@@ -44,7 +44,6 @@ public class RetrofitClientsConfiguration {
 
         @Bean
         @Scope("prototype")
-        @ConditionalOnMissingBean
         @ConditionalOnProperty(name = "retrofit.hystrix.enabled", havingValue = "true",matchIfMissing = false)
         public CallAdapter.Factory feignHystrixBuilder() {
             return new HysyrixCallAdapterFactory();
