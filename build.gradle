@@ -8,7 +8,6 @@ buildscript {
 }
 
 plugins {
-  id "io.spring.dependency-management" version "1.0.3.RELEASE"
   id "org.springframework.boot" version "1.5.8.RELEASE"
 }
 
@@ -24,7 +23,7 @@ allprojects {
 
 subprojects {
   apply plugin: 'java'
-  apply plugin: "spring-boot"
+  apply plugin: "org.springframework.boot"
 
   sourceCompatibility = 1.8
   targetCompatibility = 1.8
@@ -35,6 +34,11 @@ subprojects {
   repositories {
     jcenter()
     maven { url "http://maven.aliyun.com/nexus/content/groups/public/" }
+  }
+
+  sourceSets {
+    test.compileClasspath += configurations.compileOnly
+    test.runtimeClasspath += configurations.compileOnly
   }
 
   dependencyManagement {

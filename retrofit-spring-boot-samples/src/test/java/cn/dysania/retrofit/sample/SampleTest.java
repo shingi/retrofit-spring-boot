@@ -37,5 +37,4 @@ public class SampleTest {
 
         body.forEach(System.out::println);
     }
-
 }
