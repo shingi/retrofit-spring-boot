@@ -1,4 +1,4 @@
-package cn.dysania.retrofit.hystrix.adapter;
+package cn.dysania.retrofit.instrument.hystrix;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.ParameterizedType;

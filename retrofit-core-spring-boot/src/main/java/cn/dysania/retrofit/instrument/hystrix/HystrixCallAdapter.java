@@ -1,9 +1,6 @@
-package cn.dysania.retrofit.hystrix.adapter;
+package cn.dysania.retrofit.instrument.hystrix;
 
-import java.lang.reflect.Field;
 import java.lang.reflect.Type;
-
-import org.springframework.util.ReflectionUtils;
 
 import com.netflix.hystrix.HystrixCommand;
 import com.netflix.hystrix.HystrixCommandGroupKey;
@@ -11,6 +8,7 @@ import com.netflix.hystrix.HystrixCommandKey;
 import com.netflix.hystrix.HystrixCommandProperties;
 import com.netflix.hystrix.exception.HystrixBadRequestException;
 
+import cn.dysania.retrofit.exception.RetrofitBadRequestException;
 import okhttp3.Request;
 import retrofit2.Call;
 import retrofit2.CallAdapter;
@@ -70,15 +68,15 @@ public class HystrixCallAdapter<R> implements CallAdapter<R, Object> {
                         return response.body();
                     }
                     return response;
-                } catch (Exception e) {
-                    // TODO 包装一个业务异常 不触发服务降级处理逻辑
-                    throw new HystrixBadRequestException("bad request", e);
+                } catch (RetrofitBadRequestException e) {
+                    //Do not trigger circuitBreaker
+                    throw new HystrixBadRequestException(e.getMessage(), e);
                 }
             }
 
             @Override
             protected Object getFallback() {
-                if (circuitBreaker.isOpen()){
+                if (circuitBreaker.isOpen()) {
                     // TODO 报警逻辑，抽象报警器 报警速率控制
                 }
                 return super.getFallback();

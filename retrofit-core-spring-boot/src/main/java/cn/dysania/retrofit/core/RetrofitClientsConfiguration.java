@@ -9,7 +9,9 @@ import org.springframework.context.annotation.Scope;
 
 import com.netflix.hystrix.HystrixCommand;
 
-import cn.dysania.retrofit.hystrix.adapter.HysyrixCallAdapterFactory;
+import cn.dysania.retrofit.instrument.hystrix.HysyrixCallAdapterFactory;
+import cn.dysania.retrofit.instrument.interceptor.RetryInterceptor;
+import okhttp3.Interceptor;
 import okhttp3.OkHttpClient;
 import retrofit2.CallAdapter;
 import retrofit2.Converter;
@@ -32,6 +34,11 @@ public class RetrofitClientsConfiguration {
     }
 
     @Bean
+    public Interceptor retryInterceptor(){
+        return new RetryInterceptor();
+    }
+
+    @Bean
     @Scope("prototype")
     @ConditionalOnMissingBean
     public Retrofit.Builder retrofitBuilder() {
@@ -44,7 +51,7 @@ public class RetrofitClientsConfiguration {
 
         @Bean
         @Scope("prototype")
-        @ConditionalOnProperty(name = "retrofit.hystrix.enabled", havingValue = "true",matchIfMissing = true)
+        @ConditionalOnProperty(name = "retrofit.hystrix.enabled", havingValue = "true",matchIfMissing = false)
         public CallAdapter.Factory feignHystrixBuilder() {
             return new HysyrixCallAdapterFactory();
         }
