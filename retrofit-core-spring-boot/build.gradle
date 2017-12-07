@@ -7,6 +7,7 @@ dependencies {
   compileOnly 'com.netflix.hystrix:hystrix-core'
   compileOnly 'org.projectlombok:lombok'
   compileOnly 'org.springframework.boot:spring-boot-configuration-processor'
+  compileOnly 'org.springframework.boot:spring-boot-starter-logging'
 
   testCompile 'org.springframework.boot:spring-boot-starter-test'
 }
