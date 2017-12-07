@@ -24,7 +24,9 @@ import cn.dysania.retrofit.core.EnableRetrofitClients;
 import cn.dysania.retrofit.core.RetrofitAutoConfiguration;
 import cn.dysania.retrofit.core.RetrofitClient;
 import cn.dysania.retrofit.core.RetrofitClientsConfiguration;
+import cn.dysania.retrofit.core.RetrofitContext;
 import lombok.Data;
+import retrofit2.CallAdapter;
 import retrofit2.http.GET;
 import retrofit2.http.Path;
 import rx.Observable;
@@ -44,6 +46,9 @@ public class HystrixWithAnnotionTest {
     @Autowired
     private Github github;
 
+    @Autowired
+    private RetrofitContext context;
+
     @Before
     public void init() {
         githubServer.stubFor(get(urlEqualTo(
@@ -53,6 +58,11 @@ public class HystrixWithAnnotionTest {
                                 + "\"full_name\":\"liangGTY/retrofit-spring-boot\"}")
                         .withStatus(200)
                 ));
+    }
+
+    @Test
+    public void hystrixCallAdapterFactory() {
+        HystrixCallAdapterFactory.class.cast(context.getInstance("foo", CallAdapter.Factory.class));
     }
 
     @Test

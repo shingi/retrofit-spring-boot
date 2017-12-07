@@ -45,7 +45,7 @@ public class HystrixAdapterTest {
         OkHttpClient client = new OkHttpClient.Builder().build();
 
         Retrofit retrofit = new Retrofit.Builder()
-                .addCallAdapterFactory(new HysyrixCallAdapterFactory())
+                .addCallAdapterFactory(new HystrixCallAdapterFactory())
                 .baseUrl("http://localhost:" + githubServer.port())
                 .client(client)
                 .addConverterFactory(GsonConverterFactory.create())

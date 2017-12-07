@@ -9,7 +9,7 @@ import org.springframework.context.annotation.Scope;
 
 import com.netflix.hystrix.HystrixCommand;
 
-import cn.dysania.retrofit.instrument.hystrix.HysyrixCallAdapterFactory;
+import cn.dysania.retrofit.instrument.hystrix.HystrixCallAdapterFactory;
 import cn.dysania.retrofit.instrument.interceptor.RetryInterceptor;
 import okhttp3.Interceptor;
 import okhttp3.OkHttpClient;
@@ -53,7 +53,7 @@ public class RetrofitClientsConfiguration {
         @Scope("prototype")
         @ConditionalOnProperty(name = "retrofit.hystrix.enabled", havingValue = "true",matchIfMissing = false)
         public CallAdapter.Factory feignHystrixBuilder() {
-            return new HysyrixCallAdapterFactory();
+            return new HystrixCallAdapterFactory();
         }
     }
 

@@ -19,7 +19,7 @@ import rx.Single;
  *
  * @author baitouweng
  */
-public class HysyrixCallAdapterFactory extends CallAdapter.Factory {
+public class HystrixCallAdapterFactory extends CallAdapter.Factory {
 
     @Override
     public CallAdapter<?, ?> get(Type returnType, Annotation[] annotations, Retrofit retrofit) {
