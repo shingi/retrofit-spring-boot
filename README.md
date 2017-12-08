@@ -113,6 +113,7 @@ public interface Github {
 there can return HystrixCommand Observable Single Completable Response and ResponseBody
 
 - commandGroup
+
 ```
 github // ${RetrofitClient.name} 
 
