@@ -34,7 +34,7 @@ public class RetrofitClientsConfiguration {
     }
 
     @Bean
-    public Interceptor retryInterceptor(){
+    public Interceptor retryInterceptor() {
         return new RetryInterceptor();
     }
 
@@ -51,7 +51,8 @@ public class RetrofitClientsConfiguration {
 
         @Bean
         @Scope("prototype")
-        @ConditionalOnProperty(name = "retrofit.hystrix.enabled", havingValue = "true",matchIfMissing = false)
+        @ConditionalOnProperty(name = "retrofit.hystrix.enabled", havingValue = "true")
+        @ConditionalOnMissingBean
         public CallAdapter.Factory feignHystrixBuilder() {
             return new HystrixCallAdapterFactory();
         }

@@ -7,6 +7,7 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
 import org.springframework.util.Assert;
 
+import cn.dysania.retrofit.instrument.hystrix.HystrixCallAdapterFactory;
 import lombok.Setter;
 import okhttp3.Call;
 import okhttp3.OkHttpClient;
@@ -79,6 +80,10 @@ public class RetrofitClientFactoryBean implements FactoryBean<Object>, Initializ
         CallAdapter.Factory callAdapterFactory = getOptional(context,
                 CallAdapter.Factory.class);
         if (callAdapterFactory != null) {
+            if (callAdapterFactory instanceof HystrixCallAdapterFactory){
+                // Set the name of the command key
+               ((HystrixCallAdapterFactory) callAdapterFactory).setCommandGroup(this.name);
+            }
             builder.addCallAdapterFactory(callAdapterFactory);
         }
 

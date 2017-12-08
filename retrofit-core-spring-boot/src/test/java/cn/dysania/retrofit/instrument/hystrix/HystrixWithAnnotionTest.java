@@ -9,9 +9,10 @@ import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
 import org.springframework.test.annotation.DirtiesContext;
@@ -29,7 +30,6 @@ import lombok.Data;
 import retrofit2.CallAdapter;
 import retrofit2.http.GET;
 import retrofit2.http.Path;
-import rx.Observable;
 
 /**
  * @author liangtian
@@ -67,18 +67,10 @@ public class HystrixWithAnnotionTest {
 
     @Test
     public void testReturnHystrixCommandBody() {
-        HystrixCommand<Github.Repo> hystrixCommand = github
-                .returnHystrixCommandBody(
-                        "liangGTY");
+        HystrixCommand<Github.Repo> hystrixCommand = github.returnHystrixCommandBody("liangGTY");
+        assertThat(hystrixCommand.getCommandGroup().name()).isEqualTo("github");
+        assertThat(hystrixCommand.getCommandKey().name()).isEqualTo("GET#users/{user}/repos");
         Github.Repo repos = hystrixCommand.execute();
-        assertThat(repos).isNotNull();
-    }
-
-    @Test
-    public void testReturnObservableBody() {
-        Observable<Github.Repo> observable = github.returnObservable(
-                "liangGTY");
-        Github.Repo repos = observable.toBlocking().first();
         assertThat(repos).isNotNull();
     }
 
@@ -87,9 +79,6 @@ public class HystrixWithAnnotionTest {
 
         @GET("users/{user}/repos")
         HystrixCommand<Github.Repo> returnHystrixCommandBody(@Path("user") String user);
-
-        @GET("users/{user}/repos")
-        Observable<Github.Repo> returnObservable(@Path("user") String user);
 
         @Data
         class Repo {
@@ -102,7 +91,6 @@ public class HystrixWithAnnotionTest {
 
     @Configuration
     @EnableRetrofitClients
-    @EnableAutoConfiguration
     @Import({ RetrofitAutoConfiguration.class, RetrofitClientsConfiguration.class })
     static class Config {
 

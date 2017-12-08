@@ -1,15 +1,18 @@
 package cn.dysania.retrofit.instrument.hystrix;
 
+import java.lang.reflect.Field;
 import java.lang.reflect.Type;
+
+import org.springframework.util.Assert;
+import org.springframework.util.ReflectionUtils;
 
 import com.netflix.hystrix.HystrixCommand;
 import com.netflix.hystrix.HystrixCommandGroupKey;
 import com.netflix.hystrix.HystrixCommandKey;
-import com.netflix.hystrix.HystrixCommandProperties;
 import com.netflix.hystrix.exception.HystrixBadRequestException;
 
 import cn.dysania.retrofit.exception.RetrofitBadRequestException;
-import okhttp3.Request;
+import cn.dysania.retrofit.exception.RetrofitNotClasspathException;
 import retrofit2.Call;
 import retrofit2.CallAdapter;
 import retrofit2.Response;
@@ -35,9 +38,11 @@ public class HystrixCallAdapter<R> implements CallAdapter<R, Object> {
 
     private final Type responseType;
 
+    private final String commandGroup;
+
     public HystrixCallAdapter(Type responseType, boolean isResponse, boolean isBody,
             boolean isHystrixCommand, boolean isObservable, boolean isSingle,
-            boolean isCompletable) {
+            boolean isCompletable, String commandGroup) {
         this.responseType = responseType;
         this.isResponse = isResponse;
         this.isBody = isBody;
@@ -45,6 +50,7 @@ public class HystrixCallAdapter<R> implements CallAdapter<R, Object> {
         this.isObservable = isObservable;
         this.isSingle = isSingle;
         this.isCompletable = isCompletable;
+        this.commandGroup = commandGroup;
     }
 
     @Override
@@ -54,12 +60,10 @@ public class HystrixCallAdapter<R> implements CallAdapter<R, Object> {
 
     @Override
     public Object adapt(Call<R> call) {
-        // TODO Setter
-        Request request = call.request();
-        HystrixCommand hystrixCommand = new HystrixCommand(HystrixCommand.Setter.withGroupKey(
-                HystrixCommandGroupKey.Factory.asKey("ExampleGroup")).andCommandKey(
-                HystrixCommandKey.Factory.asKey("Github.fetchRepo")).andCommandPropertiesDefaults(
-                HystrixCommandProperties.Setter().withExecutionTimeoutInMilliseconds(200000))) {
+
+        HystrixCommand.Setter setter = obtainSetter(call);
+
+        HystrixCommand hystrixCommand = new HystrixCommand(setter) {
             @Override
             protected Object run() throws Exception {
                 try {
@@ -70,14 +74,14 @@ public class HystrixCallAdapter<R> implements CallAdapter<R, Object> {
                     return response;
                 } catch (RetrofitBadRequestException e) {
                     //Do not trigger circuitBreaker
-                    throw new HystrixBadRequestException(e.getMessage(), e);
+                    throw new HystrixBadRequestException(e.getMessage(), e.getCause());
                 }
             }
 
             @Override
             protected Object getFallback() {
                 if (circuitBreaker.isOpen()) {
-                    // TODO 报警逻辑，抽象报警器 报警速率控制
+                    // TODO report?
                 }
                 return super.getFallback();
             }
@@ -101,5 +105,37 @@ public class HystrixCallAdapter<R> implements CallAdapter<R, Object> {
         }
 
         return hystrixCommand.execute();
+    }
+
+    private HystrixCommand.Setter obtainSetter(Call<R> call) {
+        String method = call.request().method();
+
+        Assert.hasText(commandGroup, "commandGroup must be set");
+        String relativeUrl;
+        try {
+            relativeUrl = obtainRelativeUrl(call);
+        } catch (ClassNotFoundException e) {
+            throw new RetrofitNotClasspathException("Please check retrofit in classpath", e);
+        }
+
+        String commandKey = method + "#" + relativeUrl;
+
+        return HystrixCommand.Setter
+                .withGroupKey(HystrixCommandGroupKey.Factory.asKey(this.commandGroup))
+                .andCommandKey(HystrixCommandKey.Factory.asKey(commandKey));
+    }
+
+    private String obtainRelativeUrl(Call call) throws ClassNotFoundException {
+        Class<?> okHttpCallClass = Class.forName("retrofit2.OkHttpCall");
+        Class<?> serviceMethodClass = Class.forName("retrofit2.ServiceMethod");
+
+        Field serviceMethodField = ReflectionUtils.findField(okHttpCallClass, "serviceMethod");
+        serviceMethodField.setAccessible(true);
+        Object serviceMethod = ReflectionUtils.getField(serviceMethodField, call);
+
+        Field relativeUrlField = ReflectionUtils.findField(serviceMethodClass, "relativeUrl");
+        relativeUrlField.setAccessible(true);
+        Object relativeUrl = ReflectionUtils.getField(relativeUrlField, serviceMethod);
+        return (String) relativeUrl;
     }
 }

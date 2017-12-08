@@ -6,6 +6,7 @@ import java.lang.reflect.Type;
 
 import com.netflix.hystrix.HystrixCommand;
 
+import lombok.Setter;
 import retrofit2.Call;
 import retrofit2.CallAdapter;
 import retrofit2.Response;
@@ -19,7 +20,10 @@ import rx.Single;
  *
  * @author baitouweng
  */
+@Setter
 public class HystrixCallAdapterFactory extends CallAdapter.Factory {
+
+    private String commandGroup;
 
     @Override
     public CallAdapter<?, ?> get(Type returnType, Annotation[] annotations, Retrofit retrofit) {
@@ -42,12 +46,12 @@ public class HystrixCallAdapterFactory extends CallAdapter.Factory {
                 && !isCompletable
                 && !isResponse) {
             return new HystrixCallAdapter<>(returnType, false, true, false,
-                    false, false, false);
+                    false, false, false, commandGroup);
         }
 
         if (isCompletable) {
             return new HystrixCallAdapter<>(Void.class, false, false, false,
-                    false, false, true);
+                    false, false, true, commandGroup);
         }
 
         if (!(returnType instanceof ParameterizedType)) {
@@ -60,7 +64,7 @@ public class HystrixCallAdapterFactory extends CallAdapter.Factory {
         if (isResponse) {
             responseType = getParameterUpperBound(0, (ParameterizedType) returnType);
             return new HystrixCallAdapter<>(responseType, true, false, isHystrixCommand,
-                    isObservable, isSingle, false);
+                    isObservable, isSingle, false, commandGroup);
         }
 
         Type commandType = getParameterUpperBound(0, (ParameterizedType) returnType);
@@ -77,6 +81,6 @@ public class HystrixCallAdapterFactory extends CallAdapter.Factory {
         }
         return new HystrixCallAdapter(responseType, isResponse, isBody, isHystrixCommand,
                 isObservable,
-                isSingle, isCompletable);
+                isSingle, isCompletable, commandGroup);
     }
 }
