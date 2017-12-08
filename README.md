@@ -95,8 +95,20 @@ retrofit.hystrix.enabled=true
 #### retrofit interface
 
 ```java
+@RetrofitClient(name = "github", url = "${github.api.url}")
+public interface Github {
+
     @GET("users/{user}/repos")
     HystrixCommand<List<Repo>> returnHystrixCommandBody(@Path("user") String user);
+
+    @Data
+    class Repo {
+
+        String name;
+
+        String full_name;
+    }
+}
 ```
 there can return HystrixCommand Observable Single Completable Response and ResponseBody
 
