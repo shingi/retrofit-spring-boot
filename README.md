@@ -15,7 +15,7 @@ public class RetrofitClientConfig {
 ### @RetrofitClient
 
 ```java
-@RetrofitClient(url = "${github.api.url}")
+@RetrofitClient(name = "github", url = "${github.api.url}")
 public interface Github {
 
     @GET("users/{user}/repos")
@@ -68,12 +68,18 @@ public class SampleTest {
 
 ### retrofit with hystrix
 
-#### add hystrixCallAdapter
+#### dependency
 
-```java
-Retrofit.Builder builder = new Retrofit.Builder()
-    .addCallAdapterFactory(new HysyrixCallAdapterFactory());
+添加Hystrix依赖
+
+#### application.proterties
+
+开启hystrix模式
+
 ```
+retrofit.hystrix.enabled=true
+```
+
 #### retrofit interface
 
 ```java
@@ -81,5 +87,8 @@ Retrofit.Builder builder = new Retrofit.Builder()
     HystrixCommand<List<Repo>> returnHystrixCommandBody(@Path("user") String user);
 ```
 there can return HystrixCommand Observable Single Completable Response and ResponseBody
+
+默认的 commandGroup 是 @RetrofitClient的name属性,
+commandKey 为 HttpMethod#Url e.g GET#users/{user}/repos
 
 
