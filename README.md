@@ -70,11 +70,23 @@ public class SampleTest {
 
 #### dependency
 
-添加Hystrix依赖
+- maven 
+```
+<dependency>
+    <groupId>com.netflix.hystrix</groupId>
+    <artifactId>hystrix-core</artifactId>
+    <version>x.y.z</version>
+</dependency>
+```
+
+- gradle
+
+```
+<dependency org="com.netflix.hystrix" name="hystrix-core" rev="x.y.z" />
+```
+
 
 #### application.proterties
-
-开启hystrix模式
 
 ```
 retrofit.hystrix.enabled=true
@@ -88,7 +100,8 @@ retrofit.hystrix.enabled=true
 ```
 there can return HystrixCommand Observable Single Completable Response and ResponseBody
 
-默认的 commandGroup 是 @RetrofitClient的name属性,
+默认的 commandGroup 是 @RetrofitClient的name属性
+
 commandKey 为 HttpMethod#Url e.g GET#users/{user}/repos
 
 
