@@ -61,7 +61,7 @@ public class HystrixCallAdapter<R> implements CallAdapter<R, Object> {
     @Override
     public Object adapt(Call<R> call) {
 
-        HystrixCommand.Setter setter = obtainSetter(call);
+        HystrixCommand.Setter setter = obtainHystrixCommandSetter(call);
 
         HystrixCommand hystrixCommand = new HystrixCommand(setter) {
             @Override
@@ -107,7 +107,7 @@ public class HystrixCallAdapter<R> implements CallAdapter<R, Object> {
         return hystrixCommand.execute();
     }
 
-    private HystrixCommand.Setter obtainSetter(Call<R> call) {
+    private HystrixCommand.Setter obtainHystrixCommandSetter(Call<R> call) {
         String method = call.request().method();
 
         Assert.hasText(commandGroup, "commandGroup must be set");
@@ -126,6 +126,7 @@ public class HystrixCallAdapter<R> implements CallAdapter<R, Object> {
     }
 
     private String obtainRelativeUrl(Call call) throws ClassNotFoundException {
+        // OkHttpCall and ServiceMethod is Package accesscontrol
         Class<?> okHttpCallClass = Class.forName("retrofit2.OkHttpCall");
         Class<?> serviceMethodClass = Class.forName("retrofit2.ServiceMethod");
 
