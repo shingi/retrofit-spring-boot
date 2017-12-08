@@ -89,7 +89,8 @@ public class HystrixWithAnnotionTest {
 
     @Configuration
     @EnableRetrofitClients
-    @Import({ RetrofitAutoConfiguration.class, RetrofitClientsConfiguration.class })
+    @Import({ RetrofitAutoConfiguration.class, RetrofitClientsConfiguration.class,
+            HystrixCallAdapterFactoryAutoConfiguration.class })
     static class Config {
 
     }

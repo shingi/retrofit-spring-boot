@@ -1,0 +1,3 @@
+org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
+cn.dysania.retrofit.core.RetrofitAutoConfiguration,\
+cn.dysania.retrofit.instrument.hystrix.HystrixCallAdapterFactoryAutoConfiguration
