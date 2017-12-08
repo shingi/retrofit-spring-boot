@@ -102,6 +102,8 @@ there can return HystrixCommand Observable Single Completable Response and Respo
 
 默认的 commandGroup 是 @RetrofitClient的name属性
 
-commandKey 为 HttpMethod#Url e.g GET#users/{user}/repos
+commandKey 为 HttpMethod#Url
+ 
+e.g GET#users/{user}/repos
 
 
