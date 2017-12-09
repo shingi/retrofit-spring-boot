@@ -33,10 +33,10 @@ import retrofit2.http.Path;
  * @author liangtian
  */
 @RunWith(SpringRunner.class)
-@SpringBootTest(classes = HystrixWithAnnotionTest.Config.class, webEnvironment = SpringBootTest
+@SpringBootTest(classes = HystrixAutoConfigurationTest.Config.class, webEnvironment = SpringBootTest
         .WebEnvironment.NONE, properties = { "retrofit.hystrix.enabled=true" })
 @DirtiesContext
-public class HystrixWithAnnotionTest {
+public class HystrixAutoConfigurationTest {
 
     @Rule
     public WireMockRule githubServer = new WireMockRule();
@@ -90,7 +90,7 @@ public class HystrixWithAnnotionTest {
     @Configuration
     @EnableRetrofitClients
     @Import({ RetrofitAutoConfiguration.class, RetrofitClientsConfiguration.class,
-            HystrixCallAdapterFactoryAutoConfiguration.class })
+            HystrixAutoConfiguration.class })
     static class Config {
 
     }

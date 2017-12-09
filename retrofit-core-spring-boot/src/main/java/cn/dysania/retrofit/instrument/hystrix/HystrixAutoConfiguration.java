@@ -16,7 +16,7 @@ import retrofit2.CallAdapter;
  */
 @Configuration
 @ConditionalOnClass({ HystrixCommand.class })
-public class HystrixCallAdapterFactoryAutoConfiguration {
+public class HystrixAutoConfiguration {
 
     @Bean
     @Scope("prototype")
